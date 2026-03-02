@@ -1,0 +1,328 @@
+<!DOCTYPE html>  <html lang="pt-BR">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>JobConnect - Conectando Talentos e Oportunidades</title>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">  
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">  
+    <script>  
+        tailwind.config = {  
+            theme: {  
+                extend: {  
+                    fontFamily: {  
+                        sans: ['Inter', 'sans-serif'],  
+                        display: ['Space Grotesk', 'sans-serif'],  
+                    },  
+                    colors: {  
+                        primary: '#6366f1',  
+                        secondary: '#8b5cf6',  
+                        accent: '#ec4899',  
+                        dark: '#0f172a',  
+                    }  
+                }  
+            }  
+        }  
+    </script>  
+    <style>  
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }  
+        .gradient-text { background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }  
+        .job-card { transition: all 0.3s ease; }  
+        .job-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15); }  
+        .blob { position: absolute; filter: blur(40px); opacity: 0.4; animation: float 10s ease-in-out infinite; }  
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }  
+    </style>  
+</head>  
+<body class="font-sans text-gray-800 bg-gray-50">  <!-- Navigation -->  
+<nav class="fixed w-full z-50 glass border-b border-gray-200/50" id="navbar">  
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">  
+        <div class="flex justify-between items-center h-20">  
+            <div class="flex items-center space-x-2 cursor-pointer">  
+                <div class="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">JC</div>  
+                <span class="font-display font-bold text-2xl text-dark">Job<span class="gradient-text">Connect</span></span>  
+            </div>  
+            <div class="hidden md:flex items-center space-x-8">  
+                <a href="#vagas" class="text-gray-600 hover:text-primary font-medium">Vagas</a>  
+                <a href="#empresas" class="text-gray-600 hover:text-primary font-medium">Empresas</a>  
+                <a href="#categorias" class="text-gray-600 hover:text-primary font-medium">Categorias</a>  
+            </div>  
+            <div class="flex items-center space-x-4">  
+                <button onclick="toggleModal('login')" class="hidden md:block text-gray-600 hover:text-primary font-medium">Entrar</button>  
+                <button onclick="toggleModal('register')" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg transition-all">Cadastrar</button>  
+            </div>  
+        </div>  
+    </div>  
+</nav>  
+
+<!-- Hero Section -->  
+<section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">  
+    <div class="blob bg-primary w-96 h-96 rounded-full top-20 -left-20"></div>  
+    <div class="blob bg-accent w-80 h-80 rounded-full bottom-20 right-10" style="animation-delay: 2s"></div>  
+      
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">  
+        <div class="grid lg:grid-cols-2 gap-12 items-center">  
+            <div class="space-y-8">  
+                <div class="inline-flex items-center space-x-2 bg-white/80 backdrop-blur px-4 py-2 rounded-full border border-primary/20 shadow-sm">  
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>  
+                    <span class="text-sm font-medium text-gray-600">+2.500 vagas disponíveis hoje</span>  
+                </div>  
+                <h1 class="font-display text-5xl lg:text-7xl font-bold leading-tight text-dark">  
+                    Encontre seu <span class="gradient-text">próximo</span> emprego dos sonhos  
+                </h1>  
+                <div class="bg-white p-2 rounded-2xl shadow-xl border border-gray-100">  
+                    <div class="flex flex-col md:flex-row gap-2">  
+                        <div class="flex-1 flex items-center px-4 py-3 bg-gray-50 rounded-xl">  
+                            <i class="fas fa-search text-gray-400 mr-3"></i>  
+                            <input type="text" placeholder="Cargo ou palavra-chave" class="bg-transparent w-full outline-none" id="search-input">  
+                        </div>  
+                        <div class="flex-1 flex items-center px-4 py-3 bg-gray-50 rounded-xl">  
+                            <i class="fas fa-map-marker-alt text-gray-400 mr-3"></i>  
+                            <input type="text" placeholder="Localização" class="bg-transparent w-full outline-none" id="location-input">  
+                        </div>  
+                        <button onclick="searchJobs()" class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all">  
+                            Buscar  
+                        </button>  
+                    </div>  
+                </div>  
+            </div>  
+            <div class="hidden lg:block relative">  
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80" class="rounded-3xl shadow-2xl w-full object-cover h-[600px]" alt="Team">  
+            </div>  
+        </div>  
+    </div>  
+</section>  
+
+<!-- Categories -->  
+<section id="categorias" class="py-20 bg-gray-50">  
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">  
+        <h2 class="font-display text-4xl font-bold text-dark text-center mb-16">Áreas em Destaque</h2>  
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">  
+            <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl cursor-pointer text-center group">  
+                <div class="w-16 h-16 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 text-2xl mb-4 group-hover:scale-110 transition-transform">  
+                    <i class="fas fa-laptop-code"></i>  
+                </div>  
+                <h3 class="font-semibold text-gray-800">Tecnologia</h3>  
+                <p class="text-sm text-gray-500">2.4k vagas</p>  
+            </div>  
+            <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl cursor-pointer text-center group">  
+                <div class="w-16 h-16 mx-auto bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 text-2xl mb-4 group-hover:scale-110 transition-transform">  
+                    <i class="fas fa-bullhorn"></i>  
+                </div>  
+                <h3 class="font-semibold text-gray-800">Marketing</h3>  
+                <p class="text-sm text-gray-500">1.2k vagas</p>  
+            </div>  
+            <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl cursor-pointer text-center group">  
+                <div class="w-16 h-16 mx-auto bg-pink-100 rounded-2xl flex items-center justify-center text-pink-600 text-2xl mb-4 group-hover:scale-110 transition-transform">  
+                    <i class="fas fa-palette"></i>  
+                </div>  
+                <h3 class="font-semibold text-gray-800">Design</h3>  
+                <p class="text-sm text-gray-500">890 vagas</p>  
+            </div>  
+            <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl cursor-pointer text-center group">  
+                <div class="w-16 h-16 mx-auto bg-green-100 rounded-2xl flex items-center justify-center text-green-600 text-2xl mb-4 group-hover:scale-110 transition-transform">  
+                    <i class="fas fa-chart-line"></i>  
+                </div>  
+                <h3 class="font-semibold text-gray-800">Finanças</h3>  
+                <p class="text-sm text-gray-500">650 vagas</p>  
+            </div>  
+            <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl cursor-pointer text-center group">  
+                <div class="w-16 h-16 mx-auto bg-red-100 rounded-2xl flex items-center justify-center text-red-600 text-2xl mb-4 group-hover:scale-110 transition-transform">  
+                    <i class="fas fa-heartbeat"></i>  
+                </div>  
+                <h3 class="font-semibold text-gray-800">Saúde</h3>  
+                <p class="text-sm text-gray-500">1.5k vagas</p>  
+            </div>  
+            <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl cursor-pointer text-center group">  
+                <div class="w-16 h-16 mx-auto bg-yellow-100 rounded-2xl flex items-center justify-center text-yellow-600 text-2xl mb-4 group-hover:scale-110 transition-transform">  
+                    <i class="fas fa-graduation-cap"></i>  
+                </div>  
+                <h3 class="font-semibold text-gray-800">Educação</h3>  
+                <p class="text-sm text-gray-500">720 vagas</p>  
+            </div>  
+        </div>  
+    </div>  
+</section>  
+
+<!-- Jobs -->  
+<section id="vagas" class="py-20 bg-white">  
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">  
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12">  
+            <h2 class="font-display text-4xl font-bold text-dark">Vagas em Destaque</h2>  
+            <div class="flex space-x-2 mt-6 md:mt-0">  
+                <button onclick="filterJobs('all')" class="filter-btn active px-6 py-2 rounded-full border-2 border-primary bg-primary text-white font-medium" data-filter="all">Todas</button>  
+                <button onclick="filterJobs('remote')" class="filter-btn px-6 py-2 rounded-full border-2 border-gray-200 text-gray-600 font-medium hover:border-primary" data-filter="remote">Remoto</button>  
+                <button onclick="filterJobs('hybrid')" class="filter-btn px-6 py-2 rounded-full border-2 border-gray-200 text-gray-600 font-medium hover:border-primary" data-filter="hybrid">Híbrido</button>  
+            </div>  
+        </div>  
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="jobs-container"></div>  
+    </div>  
+</section>  
+
+<!-- Footer -->  
+<footer class="bg-dark text-white pt-20 pb-10">  
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">  
+        <div class="grid md:grid-cols-4 gap-12 mb-12">  
+            <div>  
+                <div class="flex items-center space-x-2 mb-6">  
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center text-white font-bold text-xl">JC</div>  
+                    <span class="font-display font-bold text-2xl">JobConnect</span>  
+                </div>  
+                <p class="text-gray-400">Conectando talentos e oportunidades.</p>  
+            </div>  
+            <div>  
+                <h4 class="font-bold text-lg mb-6">Para Candidatos</h4>  
+                <ul class="space-y-4 text-gray-400">  
+                    <li><a href="#" class="hover:text-white">Buscar Vagas</a></li>  
+                    <li><a href="#" class="hover:text-white">Cadastrar CV</a></li>  
+                </ul>  
+            </div>  
+            <div>  
+                <h4 class="font-bold text-lg mb-6">Para Empresas</h4>  
+                <ul class="space-y-4 text-gray-400">  
+                    <li><a href="#" class="hover:text-white">Publicar Vaga</a></li>  
+                    <li><a href="#" class="hover:text-white">Buscar Talentos</a></li>  
+                </ul>  
+            </div>  
+            <div>  
+                <h4 class="font-bold text-lg mb-6">Contato</h4>  
+                <ul class="space-y-4 text-gray-400">  
+                    <li>contato@jobconnect.com</li>  
+                    <li>0800 123 4567</li>  
+                </ul>  
+            </div>  
+        </div>  
+    </div>  
+</footer>  
+
+<!-- Modal Overlay -->  
+<div id="modal-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">  
+    <div id="login-modal" class="bg-white rounded-2xl p-8 max-w-md w-full hidden">  
+        <div class="flex justify-between items-center mb-6">  
+            <h3 class="font-display text-2xl font-bold text-dark">Entrar</h3>  
+            <button onclick="closeModals()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>  
+        </div>  
+        <form onsubmit="handleLogin(event)" class="space-y-4">  
+            <input type="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-primary" placeholder="Email">  
+            <input type="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-primary" placeholder="Senha">  
+            <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-lg font-semibold">Entrar</button>  
+        </form>  
+    </div>  
+      
+    <div id="register-modal" class="bg-white rounded-2xl p-8 max-w-md w-full hidden">  
+        <div class="flex justify-between items-center mb-6">  
+            <h3 class="font-display text-2xl font-bold text-dark">Cadastrar</h3>  
+            <button onclick="closeModals()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>  
+        </div>  
+        <form onsubmit="handleRegister(event)" class="space-y-4">  
+            <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-primary" placeholder="Nome">  
+            <input type="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-primary" placeholder="Email">  
+            <input type="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-primary" placeholder="Senha">  
+            <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-lg font-semibold">Cadastrar</button>  
+        </form>  
+    </div>  
+</div>  
+
+<script>  
+    const jobs = [  
+        { id: 1, title: "Desenvolvedor Full Stack", company: "TechCorp", logo: "TC", location: "São Paulo", type: "hybrid", salary: "R$ 12k-18k", tags: ["React", "Node"] },  
+        { id: 2, title: "Product Designer", company: "InnovateLab", logo: "IL", location: "Remoto", type: "remote", salary: "R$ 10k-15k", tags: ["Figma", "UI/UX"] },  
+        { id: 3, title: "Marketing Digital", company: "GrowthMax", logo: "GM", location: "Rio", type: "local", salary: "R$ 6k-9k", tags: ["SEO", "Ads"] },  
+        { id: 4, title: "Cientista de Dados", company: "DataDriven", logo: "DD", location: "Remoto", type: "remote", salary: "R$ 14k-20k", tags: ["Python", "ML"] },  
+        { id: 5, title: "Gerente de Projetos", company: "Construtora H", logo: "CH", location: "BH", type: "hybrid", salary: "R$ 13k-17k", tags: ["Scrum"] },  
+        { id: 6, title: "Enfermeiro UTI", company: "Hospital SL", logo: "SL", location: "Curitiba", type: "local", salary: "R$ 5.5k-7.5k", tags: ["UTI"] }  
+    ];  
+
+    let currentFilter = 'all';  
+
+    function renderJobs() {  
+        const container = document.getElementById('jobs-container');  
+        const filtered = currentFilter === 'all' ? jobs : jobs.filter(j => j.type === currentFilter);  
+          
+        container.innerHTML = filtered.map(job => `  
+            <div class="job-card bg-white rounded-2xl p-6 border border-gray-100 cursor-pointer" onclick="showToast('Abrir vaga: ${job.title}')">  
+                <div class="flex justify-between items-start mb-4">  
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center text-primary font-bold">${job.logo}</div>  
+                    <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">${job.type === 'remote' ? 'Remoto' : job.type === 'hybrid' ? 'Híbrido' : 'Presencial'}</span>  
+                </div>  
+                <h3 class="font-bold text-lg text-dark mb-1">${job.title}</h3>  
+                <p class="text-gray-500 text-sm mb-3">${job.company}</p>  
+                <div class="flex items-center text-gray-400 text-sm mb-4 space-x-4">  
+                    <span><i class="fas fa-map-marker-alt mr-1"></i> ${job.location}</span>  
+                    <span><i class="fas fa-money-bill-wave mr-1"></i> ${job.salary}</span>  
+                </div>  
+                <div class="flex flex-wrap gap-2 mb-4">  
+                    ${job.tags.map(tag => `<span class="px-2 py-1 bg-primary/5 text-primary rounded text-xs font-medium">${tag}</span>`).join('')}  
+                </div>  
+                <button class="w-full py-2 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-all">Ver Detalhes</button>  
+            </div>  
+        `).join('');  
+    }  
+
+    function filterJobs(type) {  
+        currentFilter = type;  
+        document.querySelectorAll('.filter-btn').forEach(btn => {  
+            if (btn.dataset.filter === type) {  
+                btn.classList.add('bg-primary', 'text-white', 'border-primary');  
+                btn.classList.remove('text-gray-600', 'border-gray-200');  
+            } else {  
+                btn.classList.remove('bg-primary', 'text-white', 'border-primary');  
+                btn.classList.add('text-gray-600', 'border-gray-200');  
+            }  
+        });  
+        renderJobs();  
+    }  
+
+    function toggleModal(type) {  
+        const overlay = document.getElementById('modal-overlay');  
+        const login = document.getElementById('login-modal');  
+        const register = document.getElementById('register-modal');  
+          
+        overlay.classList.remove('hidden');  
+        if (type === 'login') {  
+            login.classList.remove('hidden');  
+            register.classList.add('hidden');  
+        } else {  
+            register.classList.remove('hidden');  
+            login.classList.add('hidden');  
+        }  
+    }  
+
+    function closeModals() {  
+        document.getElementById('modal-overlay').classList.add('hidden');  
+        document.querySelectorAll('#modal-overlay > div').forEach(d => d.classList.add('hidden'));  
+    }  
+
+    function handleLogin(e) {  
+        e.preventDefault();  
+        closeModals();  
+        showToast('Login realizado!');  
+    }  
+
+    function handleRegister(e) {  
+        e.preventDefault();  
+        closeModals();  
+        showToast('Cadastro realizado!');  
+    }  
+
+    function searchJobs() {  
+        const search = document.getElementById('search-input').value;  
+        const location = document.getElementById('location-input').value;  
+        if (search || location) {  
+            document.getElementById('vagas').scrollIntoView({ behavior: 'smooth' });  
+            showToast(`Buscando: ${search || 'Todas'} em ${location || 'Todo Brasil'}`);  
+        }  
+    }  
+
+    function showToast(msg) {  
+        const toast = document.createElement('div');  
+        toast.className = 'fixed bottom-4 right-4 bg-dark text-white px-6 py-3 rounded-lg shadow-2xl z-50 flex items-center space-x-3 animate-slide-up';  
+        toast.innerHTML = `<i class="fas fa-check-circle text-green-400"></i><span>${msg}</span>`;  
+        document.body.appendChild(toast);  
+        setTimeout(() => toast.remove(), 3000);  
+    }  
+
+    document.addEventListener('DOMContentLoaded', renderJobs);  
+</script>
+
+</body>  
+              
